@@ -33,14 +33,18 @@ def send_otp(request):
             'message': 'Failed to generate OTP'
         })
 
+    if User.objects.filter(mobile_no = mobile_no).exists():
+        user_obj = User.objects.get(mobile_no = mobile_no)
+        user_obj.otp = otp
+        user_obj.save()
+    else:
+        user = User.objects.create(
+            mobile_no = mobile_no,
+            otp = otp
+        )
 
-    user = User.objects.create(
-        mobile_no = mobile_no,
-        otp = otp
-    )
-
-    user.set_password = password
-    user.save()
+        user.set_password = password
+        user.save()
 
     return  Response({
         'status': 200,
